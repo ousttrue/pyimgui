@@ -90,6 +90,8 @@ def main():
     io = imgui.get_io()
     io.config_flags |= imgui.CONFIG_DOCKING_ENABLE
 
+    # 4.7
+    # from https://github.com/FortAwesome/Font-Awesome/blob/a8386aae19e200ddb0f6845b5feeee5eb7013687/fonts/fontawesome-webfont.ttf
     load_font(HERE / "fontawesome-webfont.ttf")
 
     window = impl_glfw_init()
