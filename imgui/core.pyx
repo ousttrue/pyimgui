@@ -2197,6 +2197,32 @@ cdef class _DrawData(object):
         ]
 
 
+cdef class _FontConfig(object):
+    cdef cimgui.ImFontConfig *_ptr
+
+    def __init__(self):
+         self._ptr = new cimgui.ImFontConfig()
+
+    def __del__(self):
+        del self._ptr
+
+    @property
+    def merge_mode(self):
+        return self._ptr.MergeMode
+
+    @property.setter
+    def merge_mode(self, mode):
+        self._ptr.MergeMode = mode
+
+    @property
+    def glyph_min_advance_x(self):
+        return self._ptr.GlyphMinAdvanceX
+
+    @property.setter
+    def glyph_min_advance_x(self, x):
+        self._ptr.GlyphMinAdvanceX = x
+
+
 cdef class _StaticGlyphRanges(object):
     cdef const cimgui.ImWchar* ranges_ptr
 
@@ -2265,6 +2291,7 @@ cdef class _FontAtlas(object):
 
     def add_font_from_file_ttf(
         self, str filename, float size_pixels,
+        _FontConfig config=None,
         _StaticGlyphRanges glyph_ranges=None,
     ):
         self._require_pointer()
@@ -2273,7 +2300,8 @@ cdef class _FontAtlas(object):
         cdef char* in_glyph_ranges
 
         return _Font.from_ptr(self._ptr.AddFontFromFileTTF(
-            _bytes(filename), size_pixels,  NULL,
+            _bytes(filename), size_pixels, 
+            config._ptr if config else NULL,
             glyph_ranges.ranges_ptr if glyph_ranges is not None else NULL
         ))
 
@@ -2288,6 +2316,9 @@ cdef class _FontAtlas(object):
 
     def clear(self):
         self._ptr.Clear()
+
+    def build(self):
+        self._ptr.Build()
 
     def get_glyph_ranges_default(self):
         return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesDefault())
