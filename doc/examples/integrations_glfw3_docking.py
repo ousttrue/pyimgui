@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pathlib
 import glfw
 import OpenGL.GL as gl
 
@@ -7,17 +8,20 @@ from imgui.integrations.glfw import GlfwRenderer
 from testwindow import show_test_window
 
 
+HERE = pathlib.Path(__file__).absolute().parent
+
+
 def docking_space(name: str):
-    flags = (imgui.WINDOW_MENU_BAR 
-    | imgui.WINDOW_NO_DOCKING 
-    # | imgui.WINDOW_NO_BACKGROUND
-    | imgui.WINDOW_NO_TITLE_BAR
-    | imgui.WINDOW_NO_COLLAPSE
-    | imgui.WINDOW_NO_RESIZE
-    | imgui.WINDOW_NO_MOVE
-    | imgui.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS
-    | imgui.WINDOW_NO_NAV_FOCUS
-    )
+    flags = (imgui.WINDOW_MENU_BAR
+             | imgui.WINDOW_NO_DOCKING
+             # | imgui.WINDOW_NO_BACKGROUND
+             | imgui.WINDOW_NO_TITLE_BAR
+             | imgui.WINDOW_NO_COLLAPSE
+             | imgui.WINDOW_NO_RESIZE
+             | imgui.WINDOW_NO_MOVE
+             | imgui.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS
+             | imgui.WINDOW_NO_NAV_FOCUS
+             )
 
     viewport = imgui.get_main_viewport()
     x, y = viewport.pos
@@ -51,10 +55,42 @@ def docking_space(name: str):
     imgui.end()
 
 
+def load_font(path: pathlib.Path):
+    '''
+    https://github.com/ocornut/imgui/blob/master/docs/FONTS.md#font-loading-instructions
+    '''
+    io = imgui.get_io()
+    # Load a first font
+    fonts = io.fonts
+    fonts.add_font_default()
+
+    # Add character ranges and merge into the previous font
+    # The ranges array is not copied by the AddFont* functions and is used lazily
+    # so ensure it is available at the time of building or calling GetTexDataAsRGBA32().
+    # Will not be copied by AddFont* so keep in scope.
+    config = imgui.core._FontConfig()
+    config.merge_mode = True
+    config.glyph_min_advance_x = 13.0
+    # fonts->AddFontFromFileTTF("DroidSans.ttf", 18.0f, &config, io.Fonts->GetGlyphRangesJapanese()); // Merge into first font
+
+    import ctypes
+    icons_ranges = (ctypes.c_ushort * 3)(0xf000, 0xf3ff, 0)
+    address = ctypes.addressof(icons_ranges)
+
+    fonts.add_font_from_file_ttf(
+        str(path), 18.0,
+        config,
+        imgui.core._StaticGlyphRanges.from_address(address))
+    # Merge into first font
+    fonts.build()
+
+
 def main():
     imgui.create_context()
     io = imgui.get_io()
     io.config_flags |= imgui.CONFIG_DOCKING_ENABLE
+
+    load_font(HERE / "fontawesome-webfont.ttf")
 
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
@@ -90,6 +126,13 @@ def main():
                 imgui.text_ansi_colored("Eg\033[31mgAn\033[msi ", 0.2, 1., 0.)
                 imgui.extra.text_ansi_colored("Eggs", 0.2, 1., 0.)
             imgui.end()
+
+        imgui.show_metrics_window(True)
+
+        imgui.begin('font')
+        ICON_FA_SEARCH = b"\xef\x80\x82".decode('utf-8')
+        imgui.text_unformatted(ICON_FA_SEARCH)
+        imgui.end()
 
         show_test_window()
         # imgui.show_test_window()

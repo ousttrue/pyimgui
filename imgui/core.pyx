@@ -2210,7 +2210,7 @@ cdef class _FontConfig(object):
     def merge_mode(self):
         return self._ptr.MergeMode
 
-    @property.setter
+    @merge_mode.setter
     def merge_mode(self, mode):
         self._ptr.MergeMode = mode
 
@@ -2218,7 +2218,7 @@ cdef class _FontConfig(object):
     def glyph_min_advance_x(self):
         return self._ptr.GlyphMinAdvanceX
 
-    @property.setter
+    @glyph_min_advance_x.setter
     def glyph_min_advance_x(self, x):
         self._ptr.GlyphMinAdvanceX = x
 
@@ -2234,6 +2234,10 @@ cdef class _StaticGlyphRanges(object):
         instance = _StaticGlyphRanges()
         instance.ranges_ptr = ptr
         return instance
+
+    @staticmethod
+    def from_address(unsigned long long address):        
+        return _StaticGlyphRanges.from_ptr(<const unsigned short *>address)
 
 
 cdef class _Font(object):
