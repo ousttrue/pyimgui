@@ -3,6 +3,7 @@ import pathlib
 import glfw
 import OpenGL.GL as gl
 
+import fontawesome47
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 from testwindow import show_test_window
@@ -91,8 +92,8 @@ def main():
     io.config_flags |= imgui.CONFIG_DOCKING_ENABLE
 
     # 4.7
-    # from https://github.com/FortAwesome/Font-Awesome/blob/a8386aae19e200ddb0f6845b5feeee5eb7013687/fonts/fontawesome-webfont.ttf
-    load_font(HERE / "fontawesome-webfont.ttf")
+    import fontawesome47
+    load_font(fontawesome47.get_path())
 
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
@@ -132,8 +133,8 @@ def main():
         imgui.show_metrics_window(True)
 
         imgui.begin('font')
-        ICON_FA_SEARCH = b"\xef\x80\x82".decode('utf-8')
-        imgui.text_unformatted(ICON_FA_SEARCH)
+        import fontawesome47.str
+        imgui.text_unformatted(fontawesome47.str.SEARCH)
         imgui.end()
 
         show_test_window()
