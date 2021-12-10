@@ -48,7 +48,10 @@ cdef extern from "imgui_internal.h":
     ctypedef struct ImGuiTableColumn
     ctypedef struct ImGuiTableSettings
     ctypedef struct ImGuiTableColumnsSettings
-    ctypedef struct ImGuiWindow
+
+    cdef cppclass ImGuiWindow:
+        float MenuBarHeight()
+
     ctypedef struct ImGuiWindowTempData
     ctypedef struct ImGuiWindowSettings
     
@@ -655,31 +658,3 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     void GcCompactTransientMiscBuffers() except + # ?
     void GcCompactTransientWindowBuffers(ImGuiWindow* window) except + # ?
     void GcAwakeTransientWindowBuffers(ImGuiWindow* window) except + # ?
-
-   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    

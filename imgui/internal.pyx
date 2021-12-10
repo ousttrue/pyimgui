@@ -199,3 +199,24 @@ def push_item_flag(internal.ImGuiItemFlags option, bool enabled):
     
 def pop_item_flag():
     internal.PopItemFlag()
+
+
+cdef class _ImGuiWindow(object):
+    cdef internal.ImGuiWindow* _ptr
+
+    @staticmethod
+    cdef from_ptr(internal.ImGuiWindow* ptr):
+        if ptr == NULL:
+            return None
+
+        instance = _ImGuiWindow()
+        instance._ptr = ptr
+        return instance
+    
+    def menu_bar_height(self):
+        return self._ptr.MenuBarHeight()
+
+
+def get_current_window():
+    ptr = internal.GetCurrentWindow()
+    return _ImGuiWindow.from_ptr(ptr)

@@ -133,8 +133,8 @@ def main():
         imgui.show_metrics_window(True)
 
         imgui.begin('font')
-        import fontawesome47.str
-        imgui.text_unformatted(fontawesome47.str.SEARCH)
+        import fontawesome47.icons_str as ICONS_FA
+        imgui.text_unformatted(ICONS_FA.SEARCH)
         imgui.end()
 
         show_test_window()
